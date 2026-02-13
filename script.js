@@ -1,329 +1,331 @@
 // Hours - Liturgical Prayer App
+
 class HoursApp {
     constructor() {
-        this.currentPrayerIndex = 0;
-        this.completedPrayers = new Set();
-        this.speechSynthesis = window.speechSynthesis;
-        this.currentUtterance = null;
-        this.isSpeaking = false;
+        this.currentHour = null;
+        this.synth = window.speechSynthesis;
+        this.utterance = null;
+        this.completions = this.loadCompletions();
         
-        this.init();
+        this.initializeApp();
     }
 
-    init() {
-        this.loadCompletedPrayers();
-        this.setCurrentPrayerByTime();
-        this.updateUI();
+    loadCompletions() {
+        const today = new Date().toDateString();
+        const saved = localStorage.getItem('hoursCompletions');
+        
+        if (saved) {
+            const data = JSON.parse(saved);
+            // Reset if it's a new day
+            if (data.date !== today) {
+                return { date: today, completed: [] };
+            }
+            return data;
+        }
+        
+        return { date: today, completed: [] };
+    }
+
+    saveCompletions() {
+        localStorage.setItem('hoursCompletions', JSON.stringify(this.completions));
+    }
+
+    initializeApp() {
         this.setupEventListeners();
-        this.startClock();
+        this.displayCurrentPrayer();
+        this.updateNextPrayer();
+        this.updateStats();
+        this.startAutoUpdate();
         this.registerServiceWorker();
     }
 
-    loadCompletedPrayers() {
-        const today = new Date().toDateString();
-        const lastDate = localStorage.getItem('lastPrayerDate');
-        
-        if (lastDate !== today) {
-            // New day, reset completed prayers
-            this.completedPrayers = new Set();
-            localStorage.setItem('lastPrayerDate', today);
-            localStorage.removeItem('completedPrayers');
-        } else {
-            const saved = localStorage.getItem('completedPrayers');
-            if (saved) {
-                this.completedPrayers = new Set(JSON.parse(saved));
-            }
-        }
-    }
-
-    saveCompletedPrayers() {
-        localStorage.setItem('completedPrayers', JSON.stringify([...this.completedPrayers]));
-    }
-
-    setCurrentPrayerByTime() {
-        const now = new Date();
-        const currentHour = now.getHours();
-        
-        // Find the appropriate prayer for current time
-        let selectedIndex = 0;
-        for (let i = PRAYERS.length - 1; i >= 0; i--) {
-            if (currentHour >= PRAYERS[i].hour) {
-                selectedIndex = i;
-                break;
-            }
-        }
-        
-        this.currentPrayerIndex = selectedIndex;
-    }
-
-    getCurrentPrayer() {
-        return PRAYERS[this.currentPrayerIndex];
-    }
-
-    getNextPrayer() {
-        const nextIndex = (this.currentPrayerIndex + 1) % PRAYERS.length;
-        return PRAYERS[nextIndex];
-    }
-
-    getTimeUntilNextPrayer() {
-        const now = new Date();
-        const currentHour = now.getHours();
-        const currentMinutes = now.getMinutes();
-        
-        const nextPrayer = this.getNextPrayer();
-        let nextHour = nextPrayer.hour;
-        
-        // If next prayer is before current hour, it's tomorrow
-        if (nextHour <= currentHour) {
-            nextHour += 24;
-        }
-        
-        const hoursUntil = nextHour - currentHour;
-        const minutesUntil = 60 - currentMinutes;
-        
-        if (hoursUntil === 0) {
-            return `in ${minutesUntil}m`;
-        } else if (minutesUntil === 60) {
-            return `in ${hoursUntil}h`;
-        } else {
-            const adjustedHours = minutesUntil === 60 ? hoursUntil : hoursUntil - 1;
-            return `in ${adjustedHours}h ${minutesUntil}m`;
-        }
-    }
-
     setupEventListeners() {
-        // Navigation
-        document.getElementById('nav-btn').addEventListener('click', () => {
-            this.openNav();
+        // Text-to-speech controls
+        document.getElementById('speakBtn').addEventListener('click', () => {
+            this.speakPrayer();
         });
 
-        document.getElementById('close-nav').addEventListener('click', () => {
-            this.closeNav();
+        document.getElementById('stopBtn').addEventListener('click', () => {
+            this.stopSpeaking();
         });
 
-        // Create overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'overlay';
-        overlay.addEventListener('click', () => {
-            this.closeNav();
-        });
-        document.body.appendChild(overlay);
-        this.overlay = overlay;
-
-        // Text-to-speech
-        document.getElementById('speak-btn').addEventListener('click', () => {
-            this.toggleSpeech();
+        // Completion checkbox
+        document.getElementById('completionCheck').addEventListener('change', (e) => {
+            this.handleCompletion(e.target.checked);
         });
 
-        // Complete button
-        document.getElementById('complete-btn').addEventListener('click', () => {
-            this.toggleComplete();
-        });
-
-        // Generate prayer list
-        this.generatePrayerList();
-    }
-
-    generatePrayerList() {
-        const prayerList = document.getElementById('prayer-list');
-        prayerList.innerHTML = '';
-        
-        PRAYERS.forEach((prayer, index) => {
-            const item = document.createElement('button');
-            item.className = 'prayer-item';
-            if (index === this.currentPrayerIndex) {
-                item.classList.add('active');
-            }
-            if (this.completedPrayers.has(prayer.name)) {
-                item.classList.add('completed');
-            }
-            
-            item.innerHTML = `
-                <div class="prayer-item-header">
-                    <span class="prayer-item-name">${prayer.name}</span>
-                    <span class="prayer-item-time">${prayer.time}</span>
-                </div>
-                <div class="prayer-item-subtitle">${prayer.subtitle}</div>
-            `;
-            
-            item.addEventListener('click', () => {
-                this.selectPrayer(index);
-                this.closeNav();
+        // Hour navigation
+        document.querySelectorAll('.hour-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const hour = btn.dataset.hour;
+                this.displayPrayer(hour);
             });
-            
-            prayerList.appendChild(item);
+        });
+
+        // Stop speech when user leaves
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && this.synth.speaking) {
+                this.stopSpeaking();
+            }
         });
     }
 
-    selectPrayer(index) {
-        this.stopSpeech();
-        this.currentPrayerIndex = index;
-        this.updateUI();
-        this.generatePrayerList();
-    }
-
-    openNav() {
-        document.getElementById('nav-menu').classList.add('open');
-        this.overlay.classList.add('active');
-    }
-
-    closeNav() {
-        document.getElementById('nav-menu').classList.remove('open');
-        this.overlay.classList.remove('active');
-    }
-
-    toggleSpeech() {
-        if (this.isSpeaking) {
-            this.stopSpeech();
-        } else {
-            this.startSpeech();
-        }
-    }
-
-    startSpeech() {
-        const prayer = this.getCurrentPrayer();
-        const prayerText = this.stripHTML(prayer.text);
+    getCurrentHour() {
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
         
-        this.currentUtterance = new SpeechSynthesisUtterance(prayerText);
-        this.currentUtterance.rate = 0.8;
-        this.currentUtterance.pitch = 1;
-        this.currentUtterance.volume = 1;
+        let currentHourId = 'lauds';
         
-        this.currentUtterance.onend = () => {
-            this.isSpeaking = false;
-            this.updateSpeakButton();
-        };
-        
-        this.speechSynthesis.speak(this.currentUtterance);
-        this.isSpeaking = true;
-        this.updateSpeakButton();
-    }
-
-    stopSpeech() {
-        if (this.speechSynthesis.speaking) {
-            this.speechSynthesis.cancel();
-        }
-        this.isSpeaking = false;
-        this.updateSpeakButton();
-    }
-
-    updateSpeakButton() {
-        const btn = document.getElementById('speak-btn');
-        const text = document.getElementById('speak-text');
-        
-        if (this.isSpeaking) {
-            btn.classList.add('speaking');
-            text.textContent = 'Stop';
-        } else {
-            btn.classList.remove('speaking');
-            text.textContent = 'Listen';
-        }
-    }
-
-    toggleComplete() {
-        const prayer = this.getCurrentPrayer();
-        
-        if (this.completedPrayers.has(prayer.name)) {
-            this.completedPrayers.delete(prayer.name);
-        } else {
-            this.completedPrayers.add(prayer.name);
+        for (let i = 0; i < HOURS_SCHEDULE.length; i++) {
+            const hour = HOURS_SCHEDULE[i];
+            const hourMinutes = hour.hour * 60 + hour.minute;
+            
+            if (currentMinutes >= hourMinutes) {
+                currentHourId = hour.id;
+            }
         }
         
-        this.saveCompletedPrayers();
-        this.updateCompleteButton();
-        this.generatePrayerList();
-    }
-
-    updateCompleteButton() {
-        const btn = document.getElementById('complete-btn');
-        const prayer = this.getCurrentPrayer();
-        
-        if (this.completedPrayers.has(prayer.name)) {
-            btn.classList.add('completed');
-        } else {
-            btn.classList.remove('completed');
+        // After compline, show compline until midnight, then lauds
+        if (currentMinutes < HOURS_SCHEDULE[0].hour * 60) {
+            currentHourId = 'compline';
         }
+        
+        return currentHourId;
     }
 
-    stripHTML(html) {
-        const tmp = document.createElement('div');
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || '';
+    getNextHour() {
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        
+        for (let hour of HOURS_SCHEDULE) {
+            const hourMinutes = hour.hour * 60 + hour.minute;
+            if (currentMinutes < hourMinutes) {
+                return hour;
+            }
+        }
+        
+        // Next hour is tomorrow's lauds
+        return HOURS_SCHEDULE[0];
     }
 
-    updateUI() {
-        const prayer = this.getCurrentPrayer();
-        const nextPrayer = this.getNextPrayer();
+    displayCurrentPrayer() {
+        const hourId = this.getCurrentHour();
+        this.displayPrayer(hourId);
+    }
+
+    displayPrayer(hourId) {
+        this.currentHour = hourId;
+        const prayer = PRAYERS[hourId];
         
         // Update header
-        document.getElementById('prayer-title').textContent = prayer.name;
-        document.getElementById('prayer-subtitle').textContent = prayer.subtitle;
+        const schedule = HOURS_SCHEDULE.find(h => h.id === hourId);
+        document.getElementById('prayerTime').textContent = prayer.time;
+        document.getElementById('prayerName').textContent = prayer.name;
+        document.getElementById('prayerLatin').textContent = prayer.latin;
         
-        // Update prayer text
-        document.getElementById('prayer-text').innerHTML = prayer.text;
+        // Build prayer content
+        const contentDiv = document.getElementById('prayerContent');
+        contentDiv.innerHTML = '';
         
-        // Update next prayer info
-        document.getElementById('next-prayer-name').textContent = nextPrayer.name;
-        document.getElementById('next-prayer-time').textContent = this.getTimeUntilNextPrayer();
-        
-        // Update buttons
-        this.updateCompleteButton();
-        this.updateSpeakButton();
-    }
-
-    startClock() {
-        this.updateClock();
-        setInterval(() => {
-            this.updateClock();
+        prayer.content.forEach(section => {
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'prayer-section';
             
-            // Check if we need to update to next prayer
-            const now = new Date();
-            const currentHour = now.getHours();
-            const prayer = this.getCurrentPrayer();
-            
-            if (currentHour >= prayer.hour) {
-                const nextPrayer = this.getNextPrayer();
-                if (currentHour >= nextPrayer.hour && nextPrayer.hour > prayer.hour) {
-                    this.setCurrentPrayerByTime();
-                    this.updateUI();
-                    this.generatePrayerList();
-                }
+            if (section.title) {
+                const title = document.createElement('div');
+                title.className = 'section-title';
+                title.textContent = section.title;
+                sectionDiv.appendChild(title);
             }
-        }, 1000);
+            
+            if (section.text) {
+                const text = document.createElement('p');
+                text.textContent = section.text;
+                sectionDiv.appendChild(text);
+            }
+            
+            if (section.verses) {
+                section.verses.forEach(verse => {
+                    const verseP = document.createElement('p');
+                    verseP.className = 'verse';
+                    verseP.textContent = verse;
+                    sectionDiv.appendChild(verseP);
+                });
+            }
+            
+            contentDiv.appendChild(sectionDiv);
+        });
+        
+        // Update completion checkbox
+        const isCompleted = this.completions.completed.includes(hourId);
+        document.getElementById('completionCheck').checked = isCompleted;
+        
+        // Update active navigation button
+        document.querySelectorAll('.hour-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.hour === hourId);
+        });
     }
 
-    updateClock() {
+    updateNextPrayer() {
+        const nextHour = this.getNextHour();
+        const prayer = PRAYERS[nextHour.id];
+        
+        document.getElementById('nextPrayerName').textContent = prayer.name;
+        
         const now = new Date();
-        const timeString = now.toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
-        const dateString = now.toLocaleDateString('en-US', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric'
-        });
+        const nextTime = new Date();
+        nextTime.setHours(nextHour.hour, nextHour.minute, 0, 0);
         
-        document.getElementById('current-time').textContent = timeString;
-        document.getElementById('current-date').textContent = dateString;
+        // If next prayer is tomorrow
+        if (nextTime <= now) {
+            nextTime.setDate(nextTime.getDate() + 1);
+        }
+        
+        const diff = nextTime - now;
+        const hours = Math.floor(diff / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        
+        let timeText = '';
+        if (hours > 0) {
+            timeText = `in ${hours}h ${minutes}m`;
+        } else {
+            timeText = `in ${minutes}m`;
+        }
+        
+        document.getElementById('nextPrayerTime').textContent = timeText;
     }
 
-    async registerServiceWorker() {
-        if ('serviceWorker' in navigator) {
-            try {
-                await navigator.serviceWorker.register('./service-worker.js');
-                console.log('Service Worker registered');
-            } catch (error) {
-                console.log('Service Worker registration failed:', error);
+    updateStats() {
+        const statsGrid = document.getElementById('statsGrid');
+        statsGrid.innerHTML = '';
+        
+        HOURS_SCHEDULE.forEach(hour => {
+            const prayer = PRAYERS[hour.id];
+            const isCompleted = this.completions.completed.includes(hour.id);
+            
+            const statItem = document.createElement('div');
+            statItem.className = `stat-item ${isCompleted ? 'completed' : ''}`;
+            
+            if (isCompleted) {
+                statItem.innerHTML = `
+                    <div class="stat-checkmark">✓</div>
+                    <div class="stat-hour">${prayer.name}</div>
+                    <div class="stat-status">Prayed</div>
+                `;
+            } else {
+                statItem.innerHTML = `
+                    <div class="stat-hour">${prayer.name}</div>
+                    <div class="stat-time">${prayer.time}</div>
+                    <div class="stat-status">Pending</div>
+                `;
             }
+            
+            statsGrid.appendChild(statItem);
+        });
+    }
+
+    handleCompletion(isChecked) {
+        if (isChecked) {
+            if (!this.completions.completed.includes(this.currentHour)) {
+                this.completions.completed.push(this.currentHour);
+            }
+        } else {
+            this.completions.completed = this.completions.completed.filter(
+                h => h !== this.currentHour
+            );
+        }
+        
+        this.saveCompletions();
+        this.updateStats();
+    }
+
+    speakPrayer() {
+        if (this.synth.speaking) {
+            this.stopSpeaking();
+            return;
+        }
+        
+        const prayer = PRAYERS[this.currentHour];
+        let textToSpeak = `${prayer.name}. ${prayer.description}. `;
+        
+        prayer.content.forEach(section => {
+            if (section.title) {
+                textToSpeak += `${section.title}. `;
+            }
+            if (section.text) {
+                textToSpeak += `${section.text} `;
+            }
+            if (section.verses) {
+                textToSpeak += section.verses.join('. ') + '. ';
+            }
+        });
+        
+        this.utterance = new SpeechSynthesisUtterance(textToSpeak);
+        this.utterance.rate = 0.8;
+        this.utterance.pitch = 1.0;
+        this.utterance.volume = 1.0;
+        
+        this.utterance.onstart = () => {
+            document.getElementById('speakBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'flex';
+        };
+        
+        this.utterance.onend = () => {
+            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('speakBtn').style.display = 'flex';
+        };
+        
+        this.synth.speak(this.utterance);
+    }
+
+    stopSpeaking() {
+        if (this.synth.speaking) {
+            this.synth.cancel();
+        }
+        document.getElementById('stopBtn').style.display = 'none';
+        document.getElementById('speakBtn').style.display = 'flex';
+    }
+
+    startAutoUpdate() {
+        // Update every minute
+        setInterval(() => {
+            const newHour = this.getCurrentHour();
+            if (newHour !== this.currentHour) {
+                // Hour has changed, update display
+                this.displayCurrentPrayer();
+            }
+            this.updateNextPrayer();
+            
+            // Check for new day
+            const today = new Date().toDateString();
+            if (today !== this.completions.date) {
+                this.completions = { date: today, completed: [] };
+                this.saveCompletions();
+                this.updateStats();
+                document.getElementById('completionCheck').checked = false;
+            }
+        }, 60000);
+        
+        // Update next prayer countdown more frequently
+        setInterval(() => {
+            this.updateNextPrayer();
+        }, 30000);
+    }
+
+    registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registered', reg))
+                .catch(err => console.log('Service Worker registration failed', err));
         }
     }
 }
 
-// Initialize app when DOM is loaded
+// Initialize app
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => new HoursApp());
+    document.addEventListener('DOMContentLoaded', () => {
+        new HoursApp();
+    });
 } else {
     new HoursApp();
 }

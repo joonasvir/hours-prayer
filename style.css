@@ -1,430 +1,391 @@
-:root {
-    --color-bg: #1a1a2e;
-    --color-bg-secondary: #252541;
-    --color-primary: #efd6ac;
-    --color-primary-dark: #c9a87a;
-    --color-text: #f0ece3;
-    --color-text-secondary: #b8b4a8;
-    --color-accent: #6a5acd;
-    --color-complete: #4caf50;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+:root {
+    --primary: #2C1810;
+    --primary-light: #4A2F23;
+    --accent: #8B6F47;
+    --accent-light: #B8956A;
+    --background: #F5F1E8;
+    --surface: #FFFFFF;
+    --text: #2C1810;
+    --text-light: #6B5544;
+    --text-muted: #9B8B7E;
+    --border: #E0D5C7;
+    --shadow: rgba(44, 24, 16, 0.1);
+    --success: #6B8E23;
+    --radius: 12px;
+    --transition: 0.3s ease;
+}
+
 body {
     font-family: 'Georgia', 'Times New Roman', serif;
-    background: var(--color-bg);
-    color: var(--color-text);
+    background: var(--background);
+    color: var(--text);
     min-height: 100vh;
     line-height: 1.8;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
 }
 
-#app {
-    max-width: 640px;
+.container {
+    max-width: 600px;
     margin: 0 auto;
-    min-height: 100vh;
-    position: relative;
+    padding: 20px;
 }
 
-.screen {
-    display: none;
-    flex-direction: column;
-    min-height: 100vh;
-    padding: 24px;
-    animation: fadeIn 0.5s ease-out;
-}
-
-.screen.active {
-    display: flex;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Prayer Header */
-.prayer-header {
+header {
     text-align: center;
-    margin-bottom: 32px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid rgba(239, 214, 172, 0.2);
+    padding: 30px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 30px;
 }
 
-.time-indicator {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 24px;
-}
-
-.current-time {
+.app-title {
     font-size: 2.5rem;
-    font-weight: 300;
-    color: var(--color-primary);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: normal;
+    margin-bottom: 5px;
+    color: var(--primary);
+}
+
+.app-subtitle {
+    font-size: 1rem;
+    color: var(--text-light);
+    font-style: italic;
     letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
-.current-date {
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+/* Prayer Card */
+.prayer-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 15px var(--shadow);
+    border: 1px solid var(--border);
 }
 
-.prayer-title {
-    font-size: 2.5rem;
-    color: var(--color-primary);
-    margin-bottom: 8px;
-    font-weight: 400;
-    letter-spacing: 1px;
+.prayer-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--accent-light);
 }
 
-.prayer-subtitle {
-    font-size: 1.1rem;
-    color: var(--color-text-secondary);
+.time-info {
+    display: flex;
+    align-items: baseline;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.prayer-time {
+    font-size: 1.2rem;
+    color: var(--accent);
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.prayer-name {
+    font-size: 2rem;
+    font-weight: normal;
+    color: var(--primary);
+}
+
+.prayer-latin {
+    font-size: 1rem;
+    color: var(--text-muted);
     font-style: italic;
 }
 
-/* Prayer Content */
 .prayer-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 25px;
+    min-height: 200px;
 }
 
-.prayer-text {
-    flex: 1;
+.prayer-content p {
+    margin-bottom: 20px;
     font-size: 1.1rem;
     line-height: 2;
-    color: var(--color-text);
-    margin-bottom: 32px;
-    overflow-y: auto;
-    padding: 0 8px;
-}
-
-.prayer-text p {
-    margin-bottom: 1.5rem;
     text-align: justify;
 }
 
-.prayer-text p:last-child {
+.prayer-content p:last-child {
     margin-bottom: 0;
 }
 
-.prayer-text strong {
-    color: var(--color-primary);
-    font-weight: 600;
+.prayer-section {
+    margin-bottom: 25px;
 }
 
-.prayer-text em {
-    color: var(--color-text-secondary);
-}
-
-/* Prayer Actions */
-.prayer-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 24px;
-}
-
-.action-btn {
-    background: var(--color-bg-secondary);
-    border: 1px solid rgba(239, 214, 172, 0.3);
-    color: var(--color-text);
-    padding: 16px;
-    border-radius: 12px;
+.section-title {
     font-size: 1rem;
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.action-btn:active {
-    transform: scale(0.97);
-}
-
-.action-btn:hover {
-    background: var(--color-bg);
-    border-color: var(--color-primary);
-}
-
-.action-btn.speaking {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-    color: white;
-}
-
-.action-btn.completed {
-    background: var(--color-complete);
-    border-color: var(--color-complete);
-    color: white;
-}
-
-.action-btn svg {
-    flex-shrink: 0;
-}
-
-/* Prayer Footer */
-.prayer-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 24px;
-    border-top: 1px solid rgba(239, 214, 172, 0.2);
-}
-
-.next-prayer {
-    flex: 1;
-}
-
-.next-prayer .label {
-    display: block;
-    font-size: 0.85rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 6px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.next-info {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
+.verse {
+    font-style: italic;
+    padding-left: 20px;
+    border-left: 3px solid var(--accent-light);
+    margin: 15px 0;
 }
 
-.next-name {
-    font-size: 1.2rem;
-    color: var(--color-primary);
+.response {
+    color: var(--accent);
+    font-weight: 500;
 }
 
-.next-time {
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.nav-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--color-bg-secondary);
-    border: 1px solid rgba(239, 214, 172, 0.3);
-    color: var(--color-text);
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.nav-btn:active {
-    transform: scale(0.95);
-}
-
-/* Navigation Menu */
-.nav-menu {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 100%;
-    max-width: 400px;
-    height: 100vh;
-    background: var(--color-bg-secondary);
-    box-shadow: var(--shadow);
-    transition: right 0.3s ease-out;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-}
-
-.nav-menu.open {
-    right: 0;
-}
-
-.nav-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 24px;
-    border-bottom: 1px solid rgba(239, 214, 172, 0.2);
-}
-
-.nav-header h2 {
-    font-size: 1.5rem;
-    color: var(--color-primary);
-    font-weight: 400;
-}
-
-.close-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: transparent;
-    border: 1px solid rgba(239, 214, 172, 0.3);
-    color: var(--color-text);
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.close-btn:active {
-    transform: scale(0.95);
-}
-
-/* Prayer List */
-.prayer-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-}
-
-.prayer-item {
-    background: var(--color-bg);
-    border: 1px solid rgba(239, 214, 172, 0.2);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: var(--transition);
-    position: relative;
-}
-
-.prayer-item:active {
-    transform: scale(0.98);
-}
-
-.prayer-item.active {
-    border-color: var(--color-primary);
-    background: rgba(239, 214, 172, 0.05);
-}
-
-.prayer-item.completed::after {
-    content: '';
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--color-complete);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.prayer-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 4px;
-}
-
-.prayer-item-name {
-    font-size: 1.3rem;
-    color: var(--color-primary);
-    font-weight: 400;
-}
-
-.prayer-item-time {
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.prayer-item-subtitle {
-    font-size: 0.95rem;
-    color: var(--color-text-secondary);
+.loading-message {
+    text-align: center;
+    color: var(--text-muted);
     font-style: italic;
 }
 
-/* Overlay */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease-out;
-    z-index: 999;
+/* Prayer Controls */
+.prayer-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
 }
 
-.overlay.active {
-    opacity: 1;
-    pointer-events: all;
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-size: 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
+.btn-icon {
+    background: var(--accent-light);
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-::-webkit-scrollbar-track {
-    background: transparent;
+.btn-icon:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px var(--shadow);
 }
 
-::-webkit-scrollbar-thumb {
-    background: rgba(239, 214, 172, 0.3);
-    border-radius: 4px;
+.btn-icon:active {
+    transform: translateY(0);
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(239, 214, 172, 0.5);
+.icon {
+    font-size: 1.3rem;
+}
+
+.completion-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    margin-left: auto;
+    user-select: none;
+}
+
+.completion-check input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--success);
+}
+
+.check-label {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-light);
+}
+
+.completion-check input:checked ~ .check-label {
+    color: var(--success);
+    font-weight: 600;
+}
+
+/* Next Prayer */
+.next-prayer {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+
+.next-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.next-name {
+    font-size: 1.3rem;
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.next-time {
+    font-size: 1rem;
+    color: var(--accent);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Hour Navigation */
+.hour-navigation {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.hour-btn {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 15px 10px;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    color: var(--text);
+    text-align: center;
+}
+
+.hour-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.hour-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    font-weight: 600;
+}
+
+.hour-time {
+    display: block;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    opacity: 0.8;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Stats Card */
+.stats-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 25px;
+    border: 1px solid var(--border);
+}
+
+.stats-card h3 {
+    font-size: 1.2rem;
+    font-weight: normal;
+    color: var(--primary);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    background: var(--background);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.stat-item.completed {
+    background: rgba(107, 142, 35, 0.1);
+    border-color: var(--success);
+}
+
+.stat-hour {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 5px;
+}
+
+.stat-status {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.stat-item.completed .stat-status {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.stat-checkmark {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
 }
 
 /* Responsive */
-@media (min-width: 481px) {
-    .screen {
-        padding: 40px;
+@media (max-width: 480px) {
+    .app-title {
+        font-size: 2rem;
     }
-    
-    .prayer-title {
-        font-size: 3rem;
+
+    .prayer-name {
+        font-size: 1.5rem;
     }
-    
-    .current-time {
-        font-size: 3rem;
+
+    .prayer-card {
+        padding: 20px;
     }
-    
-    .prayer-text {
-        font-size: 1.2rem;
+
+    .prayer-content p {
+        font-size: 1rem;
+    }
+
+    .hour-navigation {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .prayer-controls {
+        flex-wrap: wrap;
+    }
+
+    .completion-check {
+        margin-left: 0;
+        width: 100%;
     }
 }
 
-@media (min-width: 641px) {
-    .nav-menu {
-        right: auto;
-        left: 50%;
-        transform: translateX(-50%) translateX(100vw);
+@media (max-width: 380px) {
+    .time-info {
+        flex-direction: column;
+        gap: 5px;
     }
-    
-    .nav-menu.open {
-        transform: translateX(-50%);
+
+    .stats-grid {
+        grid-template-columns: 1fr;
     }
 }

@@ -4,84 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A liturgical prayer app displaying prayers based on time of day">
-    <meta name="theme-color" content="#1a1a2e">
+    <meta name="theme-color" content="#2C1810">
     <title>Hours - Liturgical Prayer</title>
-    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🙏</text></svg>">
 </head>
 <body>
-    <div id="app">
-        <!-- Main Prayer Screen -->
-        <div id="main-screen" class="screen active">
-            <header class="prayer-header">
-                <div class="time-indicator">
-                    <span id="current-time" class="current-time">--:--</span>
-                    <span id="current-date" class="current-date"></span>
-                </div>
-                <h1 id="prayer-title" class="prayer-title">Lauds</h1>
-                <p id="prayer-subtitle" class="prayer-subtitle">Morning Prayer</p>
-            </header>
+    <div class="container">
+        <header>
+            <h1 class="app-title">🙏 Hours</h1>
+            <p class="app-subtitle">Liturgical Prayer</p>
+        </header>
 
-            <main class="prayer-content">
-                <div id="prayer-text" class="prayer-text">
-                    <!-- Prayer content loaded from prayers.js -->
-                </div>
-
-                <div class="prayer-actions">
-                    <button id="speak-btn" class="action-btn" aria-label="Read prayer aloud">
-                        <svg viewBox="0 0 24 24" width="24" height="24">
-                            <path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" 
-                                  stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <span id="speak-text">Listen</span>
-                    </button>
-                    
-                    <button id="complete-btn" class="action-btn" aria-label="Mark prayer as complete">
-                        <svg viewBox="0 0 24 24" width="24" height="24">
-                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" 
-                                  stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M22 4L12 14.01l-3-3" 
-                                  stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <span>Complete</span>
-                    </button>
-                </div>
-            </main>
-
-            <footer class="prayer-footer">
-                <div class="next-prayer">
-                    <span class="label">Next Prayer</span>
-                    <div class="next-info">
-                        <span id="next-prayer-name" class="next-name">Terce</span>
-                        <span id="next-prayer-time" class="next-time">in 2h 15m</span>
+        <main>
+            <div class="prayer-card">
+                <div class="prayer-header">
+                    <div class="time-info">
+                        <span class="prayer-time" id="prayerTime">--:--</span>
+                        <h2 class="prayer-name" id="prayerName">Loading...</h2>
                     </div>
+                    <span class="prayer-latin" id="prayerLatin"></span>
                 </div>
-                
-                <button id="nav-btn" class="nav-btn" aria-label="Navigate between prayers">
-                    <svg viewBox="0 0 24 24" width="24" height="24">
-                        <circle cx="12" cy="12" r="1" fill="currentColor"/>
-                        <circle cx="12" cy="6" r="1" fill="currentColor"/>
-                        <circle cx="12" cy="18" r="1" fill="currentColor"/>
-                    </svg>
-                </button>
-            </footer>
-        </div>
 
-        <!-- Navigation Menu -->
-        <div id="nav-menu" class="nav-menu">
-            <div class="nav-header">
-                <h2>Liturgical Hours</h2>
-                <button id="close-nav" class="close-btn" aria-label="Close menu">
-                    <svg viewBox="0 0 24 24" width="24" height="24">
-                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-                    </svg>
-                </button>
+                <div class="prayer-content" id="prayerContent">
+                    <p class="loading-message">Preparing prayer...</p>
+                </div>
+
+                <div class="prayer-controls">
+                    <button class="btn btn-icon" id="speakBtn" title="Listen to prayer">
+                        <span class="icon">🔊</span>
+                    </button>
+                    <button class="btn btn-icon" id="stopBtn" title="Stop speaking" style="display: none;">
+                        <span class="icon">⏹️</span>
+                    </button>
+                    <label class="completion-check">
+                        <input type="checkbox" id="completionCheck">
+                        <span class="check-label">Mark as prayed</span>
+                    </label>
+                </div>
             </div>
-            <nav id="prayer-list" class="prayer-list">
-                <!-- Generated dynamically -->
+
+            <div class="next-prayer" id="nextPrayer">
+                <p class="next-label">Next prayer</p>
+                <p class="next-name" id="nextPrayerName">--</p>
+                <p class="next-time" id="nextPrayerTime">--</p>
+            </div>
+
+            <nav class="hour-navigation">
+                <button class="hour-btn" data-hour="lauds">Lauds<br><span class="hour-time">6 AM</span></button>
+                <button class="hour-btn" data-hour="terce">Terce<br><span class="hour-time">9 AM</span></button>
+                <button class="hour-btn" data-hour="sext">Sext<br><span class="hour-time">12 PM</span></button>
+                <button class="hour-btn" data-hour="none">None<br><span class="hour-time">3 PM</span></button>
+                <button class="hour-btn" data-hour="vespers">Vespers<br><span class="hour-time">6 PM</span></button>
+                <button class="hour-btn" data-hour="compline">Compline<br><span class="hour-time">9 PM</span></button>
             </nav>
-        </div>
+
+            <div class="stats-card">
+                <h3>Today's Progress</h3>
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats will be populated by JavaScript -->
+                </div>
+            </div>
+        </main>
     </div>
 
     <script src="prayers.js"></script>

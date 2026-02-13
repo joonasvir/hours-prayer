@@ -1,277 +1,193 @@
-// Liturgical Prayer Texts and Schedule
-const PRAYERS = [
-    {
+// Liturgical Prayer Texts
+
+const PRAYERS = {
+    lauds: {
         name: 'Lauds',
-        subtitle: 'Morning Prayer',
+        latin: 'Laudes Matutinae',
         time: '6:00 AM',
-        hour: 6,
-        text: `<p><strong>O Lord, open my lips,</strong><br>
-And my mouth shall declare Your praise.</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p>From the rising of the sun to its setting,<br>
-The name of the Lord is to be praised.</p>
-
-<p>This is the day which the Lord has made;<br>
-Let us rejoice and be glad in it.</p>
-
-<p><strong>Psalm 63: Morning Prayer</strong></p>
-
-<p>O God, You are my God; I seek You earnestly;<br>
-My soul thirsts for You; my flesh faints for You,<br>
-As in a dry and weary land where there is no water.</p>
-
-<p>So I have looked upon You in the sanctuary,<br>
-Beholding Your power and glory.<br>
-Because Your steadfast love is better than life,<br>
-My lips will praise You.</p>
-
-<p>So I will bless You as long as I live;<br>
-In Your name I will lift up my hands.</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p><strong>Morning Prayer</strong></p>
-
-<p>Lord God, as the day begins, I offer You my heart and mind.<br>
-Guide my thoughts, words, and actions today.<br>
-May I walk in Your presence and serve You faithfully.<br>
-Grant me strength for today's tasks and grace for today's trials.<br>
-Let Your light shine through me to others.<br>
-In Jesus' name, Amen.</p>`
+        description: 'Morning Prayer',
+        content: [
+            {
+                title: 'Opening',
+                text: 'O God, come to my assistance. O Lord, make haste to help me. Glory be to the Father, and to the Son, and to the Holy Spirit. As it was in the beginning, is now, and ever shall be, world without end. Amen.'
+            },
+            {
+                title: 'Psalm',
+                verses: [
+                    'This is the day the Lord has made; let us rejoice and be glad.',
+                    'Give thanks to the Lord, for he is good; his love endures forever.',
+                    'The Lord is my strength and my song; he has become my salvation.'
+                ]
+            },
+            {
+                title: 'Canticle of Zechariah',
+                text: 'Blessed be the Lord, the God of Israel; he has come to his people and set them free. He has raised up for us a mighty savior, born of the house of his servant David.'
+            },
+            {
+                title: 'Intercessions',
+                text: 'Let us pray: O God, who makes the dawn shine with new light, grant that as we begin this day, we may walk in your presence and offer you worthy service. Through Christ our Lord. Amen.'
+            }
+        ]
     },
-    {
+    terce: {
         name: 'Terce',
-        subtitle: 'Third Hour',
+        latin: 'Tertia',
         time: '9:00 AM',
-        hour: 9,
-        text: `<p><strong>Come, Holy Spirit, fill the hearts of Your faithful,</strong><br>
-And kindle in them the fire of Your love.</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p><strong>Psalm 119:105</strong></p>
-
-<p>Your word is a lamp to my feet<br>
-And a light to my path.</p>
-
-<p>I will bless the Lord at all times;<br>
-His praise shall continually be in my mouth.<br>
-My soul makes its boast in the Lord;<br>
-Let the humble hear and be glad.</p>
-
-<p>Oh, magnify the Lord with me,<br>
-And let us exalt His name together!</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p><strong>Prayer at the Third Hour</strong></p>
-
-<p>O Holy Spirit, You who descended upon the Apostles at the third hour,<br>
-Come and renew the face of the earth.<br>
-Grant me wisdom for my work,<br>
-Patience in my trials,<br>
-And love in my interactions.<br>
-May this morning be fruitful and pleasing to You.<br>
-Through Christ our Lord, Amen.</p>`
+        description: 'Third Hour - Mid-Morning Prayer',
+        content: [
+            {
+                title: 'Opening',
+                text: 'O God, come to my assistance. O Lord, make haste to help me. Glory be to the Father, and to the Son, and to the Holy Spirit.'
+            },
+            {
+                title: 'Hymn',
+                text: 'Come, Holy Spirit, fill the hearts of your faithful and kindle in them the fire of your love. Send forth your Spirit and they shall be created, and you shall renew the face of the earth.'
+            },
+            {
+                title: 'Psalm',
+                verses: [
+                    'I lift up my eyes to the mountains—where does my help come from?',
+                    'My help comes from the Lord, the Maker of heaven and earth.',
+                    'The Lord will keep you from all harm—he will watch over your life.'
+                ]
+            },
+            {
+                title: 'Prayer',
+                text: 'Lord God, at this third hour you poured out the Holy Spirit upon the apostles. Grant that same Spirit to sanctify us and renew us throughout this day. Through Christ our Lord. Amen.'
+            }
+        ]
     },
-    {
+    sext: {
         name: 'Sext',
-        subtitle: 'Midday Prayer',
+        latin: 'Sexta',
         time: '12:00 PM',
-        hour: 12,
-        text: `<p><strong>O God, come to my assistance;</strong><br>
-O Lord, make haste to help me.</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p><strong>Psalm 121: The Guardian of Israel</strong></p>
-
-<p>I lift up my eyes to the hills—<br>
-From where does my help come?<br>
-My help comes from the Lord,<br>
-Who made heaven and earth.</p>
-
-<p>He will not let your foot be moved;<br>
-He who keeps you will not slumber.<br>
-Behold, He who keeps Israel<br>
-Will neither slumber nor sleep.</p>
-
-<p>The Lord is your keeper;<br>
-The Lord is your shade on your right hand.<br>
-The sun shall not strike you by day,<br>
-Nor the moon by night.</p>
-
-<p>The Lord will keep you from all evil;<br>
-He will keep your life.<br>
-The Lord will keep your going out and your coming in<br>
-From this time forth and forevermore.</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p><strong>Midday Prayer</strong></p>
-
-<p>Lord Jesus, at this midday hour,<br>
-I pause to remember Your presence.<br>
-Refresh my spirit and renew my strength.<br>
-Help me to complete this day with faithfulness and joy.<br>
-Bless my afternoon work and guide my steps.<br>
-In Your holy name, Amen.</p>`
+        description: 'Sixth Hour - Midday Prayer',
+        content: [
+            {
+                title: 'Opening',
+                text: 'O God, come to my assistance. O Lord, make haste to help me. Glory be to the Father, and to the Son, and to the Holy Spirit.'
+            },
+            {
+                title: 'Psalm',
+                verses: [
+                    'The Lord is my shepherd, I shall not want.',
+                    'He makes me lie down in green pastures; he leads me beside still waters.',
+                    'He restores my soul. He leads me in right paths for his name\'s sake.'
+                ]
+            },
+            {
+                title: 'Reading',
+                text: 'Whatever you do, in word or deed, do everything in the name of the Lord Jesus, giving thanks to God the Father through him.'
+            },
+            {
+                title: 'Prayer',
+                text: 'Almighty God, as the sun reaches its zenith, sustain us with your strength. May our work give you glory and serve the good of all. Through Christ our Lord. Amen.'
+            }
+        ]
     },
-    {
+    none: {
         name: 'None',
-        subtitle: 'Ninth Hour',
+        latin: 'Nona',
         time: '3:00 PM',
-        hour: 15,
-        text: `<p><strong>At the ninth hour, Jesus cried out with a loud voice,</strong><br>
-"My God, My God, why have You forsaken Me?"</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p><strong>Psalm 51: Create in Me a Clean Heart</strong></p>
-
-<p>Have mercy on me, O God, according to Your steadfast love;<br>
-According to Your abundant mercy blot out my transgressions.<br>
-Wash me thoroughly from my iniquity,<br>
-And cleanse me from my sin!</p>
-
-<p>Create in me a clean heart, O God,<br>
-And renew a right spirit within me.<br>
-Cast me not away from Your presence,<br>
-And take not Your Holy Spirit from me.</p>
-
-<p>Restore to me the joy of Your salvation,<br>
-And uphold me with a willing spirit.</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p><strong>Prayer at the Ninth Hour</strong></p>
-
-<p>Lord Jesus Christ, at this hour You gave up Your spirit on the cross,<br>
-Mortifying the deceptions of my body and soul.<br>
-Grant me grace to die to sin and live for righteousness.<br>
-Help me to finish this day well,<br>
-Seeking Your will in all things.<br>
-By Your precious blood, have mercy on me. Amen.</p>`
+        description: 'Ninth Hour - Mid-Afternoon Prayer',
+        content: [
+            {
+                title: 'Opening',
+                text: 'O God, come to my assistance. O Lord, make haste to help me. Glory be to the Father, and to the Son, and to the Holy Spirit.'
+            },
+            {
+                title: 'Remembrance',
+                text: 'At this hour, Christ gave up his spirit on the cross. We remember his perfect sacrifice and infinite love for humanity.'
+            },
+            {
+                title: 'Psalm',
+                verses: [
+                    'Into your hands I commend my spirit; you have redeemed me, O Lord, faithful God.',
+                    'I trust in the Lord. Let me be glad and rejoice in your mercy.',
+                    'My times are in your hands; deliver me from my enemies and persecutors.'
+                ]
+            },
+            {
+                title: 'Prayer',
+                text: 'Lord Jesus Christ, at this hour you hung upon the cross. May your sacrifice sanctify this day and all our works. Grant us perseverance until evening. Amen.'
+            }
+        ]
     },
-    {
+    vespers: {
         name: 'Vespers',
-        subtitle: 'Evening Prayer',
+        latin: 'Vesperae',
         time: '6:00 PM',
-        hour: 18,
-        text: `<p><strong>O God, come to my assistance;</strong><br>
-O Lord, make haste to help me.</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p><strong>Psalm 141: An Evening Prayer</strong></p>
-
-<p>Let my prayer be counted as incense before You,<br>
-And the lifting up of my hands as the evening sacrifice!</p>
-
-<p>Set a guard, O Lord, over my mouth;<br>
-Keep watch over the door of my lips!<br>
-Do not let my heart incline to any evil,<br>
-To busy myself with wicked deeds.</p>
-
-<p>But my eyes are toward You, O God, my Lord;<br>
-In You I seek refuge; leave me not defenseless!</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p><strong>Magnificat</strong></p>
-
-<p>My soul magnifies the Lord,<br>
-And my spirit rejoices in God my Savior,<br>
-For He has looked on the humble estate of His servant.<br>
-For behold, from now on all generations will call me blessed;</p>
-
-<p>For He who is mighty has done great things for me,<br>
-And holy is His name.<br>
-And His mercy is for those who fear Him<br>
-From generation to generation.</p>
-
-<p><strong>Evening Prayer</strong></p>
-
-<p>Lord, as evening falls, I thank You for this day.<br>
-For Your protection, provision, and guidance, I give thanks.<br>
-Forgive me for any ways I have failed You today.<br>
-Grant me peaceful rest and prepare me for tomorrow.<br>
-Watch over me and all those I love through the night.<br>
-In Jesus' name, Amen.</p>`
+        description: 'Evening Prayer',
+        content: [
+            {
+                title: 'Opening',
+                text: 'O God, come to my assistance. O Lord, make haste to help me. Glory be to the Father, and to the Son, and to the Holy Spirit.'
+            },
+            {
+                title: 'Evening Hymn',
+                text: 'O radiant Light, O Sun divine of God the Father\'s deathless face. O image of the light sublime that fills the heavenly dwelling place.'
+            },
+            {
+                title: 'Psalm',
+                verses: [
+                    'Bless the Lord, O my soul; O Lord my God, you are very great.',
+                    'You are clothed with honor and majesty, wrapped in light as with a garment.',
+                    'You make darkness, and it is night, when all the animals of the forest come creeping out.'
+                ]
+            },
+            {
+                title: 'Canticle of Mary',
+                text: 'My soul magnifies the Lord, and my spirit rejoices in God my Savior. For he has looked with favor on the lowliness of his servant. Surely, from now on all generations will call me blessed.'
+            },
+            {
+                title: 'Prayer',
+                text: 'O God, as this day draws to a close, we thank you for your blessings. Watch over us through the night and bring us safely to a new day. Through Christ our Lord. Amen.'
+            }
+        ]
     },
-    {
+    compline: {
         name: 'Compline',
-        subtitle: 'Night Prayer',
+        latin: 'Completorium',
         time: '9:00 PM',
-        hour: 21,
-        text: `<p><strong>May the Lord almighty grant us a peaceful night and a perfect end.</strong><br>
-Amen.</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p><strong>Examination of Conscience</strong></p>
-
-<p>Brethren, be sober-minded; be watchful.<br>
-Your adversary the devil prowls around like a roaring lion,<br>
-Seeking someone to devour.</p>
-
-<p>But You, O Lord, have mercy on us.<br>
-Thanks be to God.</p>
-
-<p><strong>Psalm 91: Under God's Protection</strong></p>
-
-<p>He who dwells in the shelter of the Most High<br>
-Will abide in the shadow of the Almighty.<br>
-I will say to the Lord, "My refuge and my fortress,<br>
-My God, in whom I trust."</p>
-
-<p>For He will deliver you from the snare of the fowler<br>
-And from the deadly pestilence.<br>
-He will cover you with His pinions,<br>
-And under His wings you will find refuge.</p>
-
-<p>You will not fear the terror of the night,<br>
-Nor the arrow that flies by day,<br>
-Nor the pestilence that stalks in darkness,<br>
-Nor the destruction that wastes at noonday.</p>
-
-<p><em>Glory to the Father, and to the Son, and to the Holy Spirit,<br>
-As it was in the beginning, is now, and ever shall be, world without end. Amen.</em></p>
-
-<p><strong>Nunc Dimittis</strong></p>
-
-<p>Lord, now let Your servant depart in peace,<br>
-According to Your word;<br>
-For my eyes have seen Your salvation<br>
-Which You have prepared in the presence of all peoples.</p>
-
-<p><strong>Night Prayer</strong></p>
-
-<p>Into Your hands, O Lord, I commend my spirit.<br>
-You have redeemed me, O Lord, faithful God.<br>
-Keep me as the apple of Your eye;<br>
-Hide me in the shadow of Your wings.</p>
-
-<p>Visit this place, O Lord, and drive far from it all snares of the enemy;<br>
-Let Your holy angels dwell with us to preserve us in peace;<br>
-And let Your blessing be upon us always.<br>
-Through Christ our Lord. Amen.</p>
-
-<p>May the almighty and merciful Lord,<br>
-The Father, the Son, and the Holy Spirit,<br>
-Bless us and keep us. Amen.</p>`
+        description: 'Night Prayer',
+        content: [
+            {
+                title: 'Opening',
+                text: 'O God, come to my assistance. O Lord, make haste to help me. Glory be to the Father, and to the Son, and to the Holy Spirit.'
+            },
+            {
+                title: 'Examination of Conscience',
+                text: 'Let us examine our conscience in silence and contrition, recalling the mercies and graces of this day, and any ways we have fallen short of love.'
+            },
+            {
+                title: 'Psalm',
+                verses: [
+                    'In peace I will lie down and sleep, for you alone, O Lord, make me dwell in safety.',
+                    'Into your hands I commend my spirit; you have redeemed me, O Lord, faithful God.',
+                    'Keep me as the apple of your eye; hide me in the shadow of your wings.'
+                ]
+            },
+            {
+                title: 'Canticle of Simeon',
+                text: 'Lord, now let your servant go in peace; your word has been fulfilled. My own eyes have seen the salvation which you have prepared in the sight of every people.'
+            },
+            {
+                title: 'Night Prayer',
+                text: 'May the all-powerful Lord grant us a restful night and a peaceful death. Amen.'
+            },
+            {
+                title: 'Marian Antiphon',
+                text: 'Hail, Holy Queen, Mother of Mercy, our life, our sweetness, and our hope. To thee do we cry, poor banished children of Eve. To thee do we send up our sighs, mourning and weeping in this valley of tears. Turn then, most gracious advocate, thine eyes of mercy toward us.'
+            }
+        ]
     }
+};
+
+const HOURS_SCHEDULE = [
+    { id: 'lauds', hour: 6, minute: 0 },
+    { id: 'terce', hour: 9, minute: 0 },
+    { id: 'sext', hour: 12, minute: 0 },
+    { id: 'none', hour: 15, minute: 0 },
+    { id: 'vespers', hour: 18, minute: 0 },
+    { id: 'compline', hour: 21, minute: 0 }
 ];
