@@ -1,0 +1,430 @@
+:root {
+    --color-bg: #1a1a2e;
+    --color-bg-secondary: #252541;
+    --color-primary: #efd6ac;
+    --color-primary-dark: #c9a87a;
+    --color-text: #f0ece3;
+    --color-text-secondary: #b8b4a8;
+    --color-accent: #6a5acd;
+    --color-complete: #4caf50;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+#app {
+    max-width: 640px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+}
+
+.screen {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 24px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.screen.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Prayer Header */
+.prayer-header {
+    text-align: center;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(239, 214, 172, 0.2);
+}
+
+.time-indicator {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 24px;
+}
+
+.current-time {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--color-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    letter-spacing: 2px;
+}
+
+.current-date {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.prayer-title {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+.prayer-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+/* Prayer Content */
+.prayer-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.prayer-text {
+    flex: 1;
+    font-size: 1.1rem;
+    line-height: 2;
+    color: var(--color-text);
+    margin-bottom: 32px;
+    overflow-y: auto;
+    padding: 0 8px;
+}
+
+.prayer-text p {
+    margin-bottom: 1.5rem;
+    text-align: justify;
+}
+
+.prayer-text p:last-child {
+    margin-bottom: 0;
+}
+
+.prayer-text strong {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.prayer-text em {
+    color: var(--color-text-secondary);
+}
+
+/* Prayer Actions */
+.prayer-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.action-btn {
+    background: var(--color-bg-secondary);
+    border: 1px solid rgba(239, 214, 172, 0.3);
+    color: var(--color-text);
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.action-btn:active {
+    transform: scale(0.97);
+}
+
+.action-btn:hover {
+    background: var(--color-bg);
+    border-color: var(--color-primary);
+}
+
+.action-btn.speaking {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: white;
+}
+
+.action-btn.completed {
+    background: var(--color-complete);
+    border-color: var(--color-complete);
+    color: white;
+}
+
+.action-btn svg {
+    flex-shrink: 0;
+}
+
+/* Prayer Footer */
+.prayer-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 24px;
+    border-top: 1px solid rgba(239, 214, 172, 0.2);
+}
+
+.next-prayer {
+    flex: 1;
+}
+
+.next-prayer .label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.next-info {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.next-name {
+    font-size: 1.2rem;
+    color: var(--color-primary);
+}
+
+.next-time {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.nav-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--color-bg-secondary);
+    border: 1px solid rgba(239, 214, 172, 0.3);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.nav-btn:active {
+    transform: scale(0.95);
+}
+
+/* Navigation Menu */
+.nav-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    max-width: 400px;
+    height: 100vh;
+    background: var(--color-bg-secondary);
+    box-shadow: var(--shadow);
+    transition: right 0.3s ease-out;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-menu.open {
+    right: 0;
+}
+
+.nav-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+    border-bottom: 1px solid rgba(239, 214, 172, 0.2);
+}
+
+.nav-header h2 {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    font-weight: 400;
+}
+
+.close-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(239, 214, 172, 0.3);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:active {
+    transform: scale(0.95);
+}
+
+/* Prayer List */
+.prayer-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.prayer-item {
+    background: var(--color-bg);
+    border: 1px solid rgba(239, 214, 172, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.prayer-item:active {
+    transform: scale(0.98);
+}
+
+.prayer-item.active {
+    border-color: var(--color-primary);
+    background: rgba(239, 214, 172, 0.05);
+}
+
+.prayer-item.completed::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-complete);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prayer-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+}
+
+.prayer-item-name {
+    font-size: 1.3rem;
+    color: var(--color-primary);
+    font-weight: 400;
+}
+
+.prayer-item-time {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.prayer-item-subtitle {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-out;
+    z-index: 999;
+}
+
+.overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(239, 214, 172, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(239, 214, 172, 0.5);
+}
+
+/* Responsive */
+@media (min-width: 481px) {
+    .screen {
+        padding: 40px;
+    }
+    
+    .prayer-title {
+        font-size: 3rem;
+    }
+    
+    .current-time {
+        font-size: 3rem;
+    }
+    
+    .prayer-text {
+        font-size: 1.2rem;
+    }
+}
+
+@media (min-width: 641px) {
+    .nav-menu {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%) translateX(100vw);
+    }
+    
+    .nav-menu.open {
+        transform: translateX(-50%);
+    }
+}
